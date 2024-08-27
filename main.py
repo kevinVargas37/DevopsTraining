@@ -8,8 +8,9 @@ app = FastAPI()
 async def lista_ordenada(lista_no_ordenada: str):
     # Convertir la cadena de texto a una lista de enteros
     lista_no_ordenada = [int(x) for x in lista_no_ordenada.strip('[]').split(',')]
+    # URL para probar: http://localhost:8000/lista-ordenada?lista_no_ordenada=[5,4,7,2,3,2]
 
-    # Ordenar la listaZZZ
+    # Ordenar la lista
     lista_ordenada = sorted(lista_no_ordenada)
 
     # Obtener la hora actual del sistema
@@ -20,6 +21,7 @@ async def lista_ordenada(lista_no_ordenada: str):
         "hora_sistema": hora_sistema,
         "lista_ordenada": lista_ordenada
     }
-@app.get("/healtcheck")
-async def healtcheck():
+    #
+@app.get("/healthcheck")
+async def healthcheck():
     return "OK"
