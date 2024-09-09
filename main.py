@@ -4,8 +4,15 @@ from typing import List
 
 app = FastAPI()
 
+
 @app.get("/lista-ordenada")
-async def lista_ordenada(lista_no_ordenada: str = Query(..., description="Cadena de texto con números separados por comas")):
+async def lista_ordenada(
+    lista_no_ordenada: str = Query(
+        ...,
+        alias="lista-no-ordenada",
+        description="Cadena de texto con números separados por comas",
+    )
+):
     """
     Ordena una lista desordenada de números y devuelve la lista ordenada junto con la hora actual del sistema.
 
@@ -21,10 +28,13 @@ async def lista_ordenada(lista_no_ordenada: str = Query(..., description="Cadena
     """
     try:
         # Convertir la cadena de texto a una lista de enteros
-        lista_no_ordenada = lista_no_ordenada.strip('[]').split(',')
+        lista_no_ordenada = lista_no_ordenada.strip("[]").split(",")
         lista_no_ordenada = [int(x) for x in lista_no_ordenada]
     except ValueError:
-        raise HTTPException(status_code=400, detail="La lista debe contener solo números enteros separados por comas.")
+        raise HTTPException(
+            status_code=400,
+            detail="La lista debe contener solo números enteros separados por comas.",
+        )
 
     # Ordenar la lista
     lista_ordenada = sorted(lista_no_ordenada)
@@ -33,10 +43,8 @@ async def lista_ordenada(lista_no_ordenada: str = Query(..., description="Cadena
     hora_sistema = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Retornar la respuesta con la lista ordenada y la hora del sistema
-    return {
-        "hora_sistema": hora_sistema,
-        "lista_ordenada": lista_ordenada
-    }
+    return {"hora_sistema": hora_sistema, "lista_ordenada": lista_ordenada}
+
 
 @app.get("/healthcheck")
 async def healthcheck():
