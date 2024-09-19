@@ -4,22 +4,42 @@ services:
   mongodb:
     image: mongo:5.0.3
     container_name: mongodb
+    restart: always
     networks:
       - mongodb-net
+    volumes:
+      - mongodb_data:/data/db
     ports:
-      - "27017:27017"  
+      - "27017:27017"
+    hostname: mongodb
+    profiles:
+      - mongodb
 
   python-api:
     build: .
     container_name: python-api
     environment:
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
+      - MONGODB_HOST=${MONGODB_HOST}
+      - MONGODB_PORT=${MONGODB_PORT}
+      - TZ=${TZ}
     networks:
       - mongodb-net
+    depends_on:
+      - mongodb
+    volumes:
+      - ./volumes/logs/info.log:/opt/python-api/logs/info.log
     ports:
-      - "8000:8000"  
+      - "8000:8000"
+    restart: always
+    hostname: python-api
+    profiles:
+      - python-api
 
 networks:
   mongodb-net:
     driver: bridge
+    name: mongodb-net
+
+volumes:
+  mongodb_data:
+    name: mongodb_data
