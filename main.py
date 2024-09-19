@@ -7,13 +7,16 @@ import uuid
 
 app = FastAPI()
 
-# Configuracion para el mongo DB"
-mongodb_host = os.getenv("MONGODB_HOST", "localhost")
-mongodb_port = int(os.getenv("MONGODB_PORT", 27017))
-client = MongoClient(mongodb_host, mongodb_port)
-db = client["python_app"]
-collection = db["listas_no_ordenadas"]
-
+# Configuración de MongoDB desde las variables de entorno
+mongodb_host = os.getenv("MONGODB_HOST")
+mongodb_port = int(os.getenv("MONGODB_PORT"))
+try:
+    client = MongoClient(mongodb_host, mongodb_port)
+    db = client["python_app"]
+    collection = db["listas_no_ordenadas"]
+except Exception as e:
+    print(f"Error conectando a MongoDB: {e}")
+    raise HTTPException(status_code=500, detail="Error al conectar con MongoDB.")
 
 @app.get("/lista-ordenada")
 async def lista_ordenada(
@@ -25,16 +28,6 @@ async def lista_ordenada(
 ):
     """
     Ordena una lista desordenada de números y devuelve la lista ordenada junto con la hora actual del sistema.
-
-    Args:
-    - lista_no_ordenada (str): Una cadena de texto que representa una lista de números separados por comas.
-      Ejemplo: "[5,4,7,2,3,2]"
-
-    Returns:
-    - dict: Un diccionario que contiene la hora actual del sistema y la lista de números ordenada.
-
-    Raises:
-    - HTTPException: Si la cadena proporcionada no puede convertirse en una lista de enteros.
     """
     try:
         # Convertir la cadena de texto a una lista de enteros
@@ -54,7 +47,6 @@ async def lista_ordenada(
 
     # Retornar la respuesta con la lista ordenada y la hora del sistema
     return {"hora_sistema": hora_sistema, "lista_ordenada": lista_ordenada}
-
 
 @app.get("/guardar-lista-no-ordenada")
 async def guardar_lista_no_ordenada(
@@ -92,7 +84,6 @@ async def guardar_lista_no_ordenada(
 
     # Responder con el mensaje de éxito
     return {"msg": f"La lista fue guardada con el id: {id_unico}"}
-
 
 @app.get("/healthcheck")
 async def healthcheck():
