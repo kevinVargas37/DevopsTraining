@@ -50,6 +50,7 @@ python-api:
 
    ```bash
    mkdir -p volumes/logs
+   touch ./volumes/logs/info.log
    ```
 
 3. **Ejecutar los contenedores**
