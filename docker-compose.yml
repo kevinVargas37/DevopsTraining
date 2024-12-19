@@ -35,6 +35,26 @@ services:
     profiles:
       - python-api
 
+  api-monitor:
+    build:
+      context: ./api-monitor
+      dockerfile: Dockerfile.monitor
+    container_name: api-monitor
+    environment:
+      - TARGET_CONTAINER_HOST=${TARGET_CONTAINER_HOST}
+      - TARGET_CONTAINER_PORT=${TARGET_CONTAINER_PORT}
+      - CHECK_INTERVAL=${CHECK_INTERVAL}
+      - TZ=${TZ}
+    networks:
+      - mongodb-net
+    depends_on:
+      - python-api
+    volumes:
+      - ./volumes/logs/api-monitor.log:/opt/monitor/logs/api-monitor.log
+    restart: always
+    profiles:
+      - api-monitor
+
 networks:
   mongodb-net:
     driver: bridge
