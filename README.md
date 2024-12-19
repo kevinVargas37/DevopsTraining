@@ -73,7 +73,16 @@ docker-compose --profile mongodb --profile python-api up --build
 ```bash
 docker-compose --profile python-api up --build
    ```
-   5. **Detener los servicios**
+
+   5. **Verificar monitor**
+
+   Si se quiere verificar que el servicio api-monitor esté escribiendo logs en volumes/logs/api-monitor.log
+
+   ```bash
+tail -f volumes/logs/api-monitor.log
+   ```
+
+   6. **Detener los servicios**
 
    Para detener los servicios en ejecución, utiliza el comando:
 
@@ -81,6 +90,8 @@ docker-compose --profile python-api up --build
 docker-compose down
 
    ```
+
+
 
    ## Endpoints del API
 
